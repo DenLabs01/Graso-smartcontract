@@ -1,5 +1,5 @@
 // Unit tests for the structs defined in `types.cairo`.
-use graso_contract::types::{Contributor, PropertyInfo};
+use graso_contract::types::types::{Contributor, PropertyInfo};
 
 #[test]
 fn test_property_info_serialization() {
