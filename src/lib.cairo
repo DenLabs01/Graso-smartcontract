@@ -30,6 +30,6 @@ mod HelloStarknet {
         }
     }
 }
+pub mod interfaces;
 
 pub mod types;
-pub mod interfaces;

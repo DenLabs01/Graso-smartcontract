@@ -30,9 +30,7 @@ fn test_property_info_serialization() {
 #[test]
 fn test_contributor_serialization() {
     let contributor = Contributor {
-        wallet_address: 0x1234.try_into().unwrap(),
-        amount: 100,
-        timestamp: 1_700_000_000,
+        wallet_address: 0x1234.try_into().unwrap(), amount: 100, timestamp: 1_700_000_000,
     };
 
     let mut serialized: Array<felt252> = array![];
@@ -47,9 +45,7 @@ fn test_contributor_serialization() {
 #[test]
 fn test_contributor_edge_case() {
     let contributor = Contributor {
-        wallet_address: 0x5678.try_into().unwrap(),
-        amount: 0,
-        timestamp: 1_700_000_000,
+        wallet_address: 0x5678.try_into().unwrap(), amount: 0, timestamp: 1_700_000_000,
     };
 
     assert!(contributor.amount == 0, "Contributor edge case with amount = 0 failed.");

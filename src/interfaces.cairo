@@ -1,4 +1,4 @@
-use graso_contract::types::{PropertyInfo, Contributor};
+use graso_contract::types::{Contributor, PropertyInfo};
 use starknet::ContractAddress;
 
 /// Interface representing `IRealEstateIDO`.
