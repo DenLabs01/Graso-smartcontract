@@ -2,7 +2,7 @@
 use starknet::ContractAddress;
 
 /// Struct representing property information for an IDO campaign.
-#[derive(PartialEq, Drop, Serde, Copy)]
+#[derive(PartialEq, Drop, Serde, Copy, starknet::Store)]
 pub struct PropertyInfo {
     /// Short name of the property (e.g., "Luxury Condo").
     pub title: felt252,
@@ -31,7 +31,7 @@ pub struct PropertyInfo {
 }
 
 /// Struct representing an individual contributor to a property IDO.
-#[derive(PartialEq, Drop, Serde, Copy)]
+#[derive(PartialEq, Drop, Serde, Copy, starknet::Store)]
 pub struct Contributor {
     /// Starknet address of the contributor.
     pub wallet_address: ContractAddress,
