@@ -7,5 +7,5 @@ pub mod types {
 }
 
 pub mod contracts {
-    pub mod realestate_ido;
+    pub mod graso;
 }
