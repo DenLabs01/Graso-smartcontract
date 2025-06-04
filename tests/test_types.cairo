@@ -90,7 +90,7 @@ fn create_test_property() -> PropertyInfo {
 
 #[test]
 fn test_get_property_info_returns_default_for_nonexistent() {
-    let contract = declare("RealEstateIDO").unwrap().contract_class();
+    let contract = declare("Graso").unwrap().contract_class();
     let (contract_address, _) = contract.deploy(@ArrayTrait::new()).unwrap();
 
     let dispatcher = IRealEstateIDODispatcher { contract_address };
@@ -114,7 +114,7 @@ fn test_get_property_info_returns_default_for_nonexistent() {
 #[test]
 fn test_get_contributors_empty_case() {
     // 🔹 Test Case 1: Property with 0 contributors → Returns empty array
-    let contract = declare("RealEstateIDO").unwrap().contract_class();
+    let contract = declare("Graso").unwrap().contract_class();
     let (contract_address, _) = contract.deploy(@ArrayTrait::new()).unwrap();
 
     let dispatcher = IRealEstateIDODispatcher { contract_address };
@@ -128,7 +128,7 @@ fn test_get_contributors_empty_case() {
 #[test]
 fn test_get_contributors_returns_array_type() {
     // Test that the function returns the correct type
-    let contract = declare("RealEstateIDO").unwrap().contract_class();
+    let contract = declare("Graso").unwrap().contract_class();
     let (contract_address, _) = contract.deploy(@ArrayTrait::new()).unwrap();
 
     let dispatcher = IRealEstateIDODispatcher { contract_address };
@@ -147,7 +147,7 @@ fn test_get_contributors_returns_array_type() {
 #[test]
 fn test_is_contributor_returns_false_for_non_contributor() {
     // 🔹 Test Case 3: is_contributor → Returns (false, 0) for non-contributor
-    let contract = declare("RealEstateIDO").unwrap().contract_class();
+    let contract = declare("Graso").unwrap().contract_class();
     let (contract_address, _) = contract.deploy(@ArrayTrait::new()).unwrap();
 
     let dispatcher = IRealEstateIDODispatcher { contract_address };
@@ -162,7 +162,7 @@ fn test_is_contributor_returns_false_for_non_contributor() {
 
 #[test]
 fn test_is_contributor_different_properties() {
-    let contract = declare("RealEstateIDO").unwrap().contract_class();
+    let contract = declare("Graso").unwrap().contract_class();
     let (contract_address, _) = contract.deploy(@ArrayTrait::new()).unwrap();
 
     let dispatcher = IRealEstateIDODispatcher { contract_address };
@@ -182,7 +182,7 @@ fn test_is_contributor_different_properties() {
 
 #[test]
 fn test_is_contributor_with_multiple_addresses() {
-    let contract = declare("RealEstateIDO").unwrap().contract_class();
+    let contract = declare("Graso").unwrap().contract_class();
     let (contract_address, _) = contract.deploy(@ArrayTrait::new()).unwrap();
 
     let dispatcher = IRealEstateIDODispatcher { contract_address };
@@ -209,7 +209,7 @@ fn test_is_contributor_with_multiple_addresses() {
 
 #[test]
 fn test_getter_functions_gas_efficiency() {
-    let contract = declare("RealEstateIDO").unwrap().contract_class();
+    let contract = declare("Graso").unwrap().contract_class();
     let (contract_address, _) = contract.deploy(@ArrayTrait::new()).unwrap();
 
     let dispatcher = IRealEstateIDODispatcher { contract_address };
@@ -238,7 +238,7 @@ fn test_getter_functions_gas_efficiency() {
 
 #[test]
 fn test_get_property_info_with_different_property_ids() {
-    let contract = declare("RealEstateIDO").unwrap().contract_class();
+    let contract = declare("Graso").unwrap().contract_class();
     let (contract_address, _) = contract.deploy(@ArrayTrait::new()).unwrap();
 
     let dispatcher = IRealEstateIDODispatcher { contract_address };
@@ -256,7 +256,7 @@ fn test_get_property_info_with_different_property_ids() {
 
 #[test]
 fn test_contributors_array_properties() {
-    let contract = declare("RealEstateIDO").unwrap().contract_class();
+    let contract = declare("Graso").unwrap().contract_class();
     let (contract_address, _) = contract.deploy(@ArrayTrait::new()).unwrap();
 
     let dispatcher = IRealEstateIDODispatcher { contract_address };
