@@ -1,25 +1,28 @@
 #[starknet::contract]
 pub mod Graso {
+    use core::starknet::storage::{
+        Map, MutableVecTrait, StoragePathEntry, StoragePointerReadAccess, StoragePointerWriteAccess,
+        Vec, VecTrait,
+    };
+    use core::starknet::{ContractAddress, get_caller_address};
     use graso_contract::interfaces::irealestateido::IRealEstateIDO;
     use graso_contract::types::types::{Contributor, PropertyInfo};
-
-    use core::starknet::ContractAddress;
-    use core::starknet::get_caller_address;
-    use core::starknet::storage::{Map, StoragePathEntry};
-    use core::starknet::storage::{Vec, VecTrait, MutableVecTrait};
-    use core::starknet::storage::{StoragePointerReadAccess, StoragePointerWriteAccess};
 
     #[storage]
     struct Storage {
         // Mapping of property ID to PropertyInfo
         properties: Map<felt252, PropertyInfo>,
-        
         // Mapping of property ID to array of contributors
         contributors: Map<felt252, Array<Contributor>>,
-        
+        // Contributors list: property_id -> array of contributors (stored as separate entries)
+        property_contributors: Map<(felt252, u32), ContractAddress>,
+        // Count of contributors per property: property_id -> count
+        contributor_counts: Map<felt252, u32>,
+        contribution_timestamps: Map<(felt252, ContractAddress), u64>,
+        // Array of all property IDs
+
         // Mapping of (property ID, user address) to contribution amount
         user_contributions: Map<(felt252, ContractAddress), u64>,
-        
         // Array of all property IDs
         all_properties: Array<felt252>,
     }
@@ -37,51 +40,82 @@ pub mod Graso {
             deadline: u64,
             longitude: felt252,
             latitude: felt252,
-        ){}
-        fn contribute(ref self: ContractState, property_id: felt252, amount: u64) {
-    
-        }
+        ) {}
+        fn contribute(ref self: ContractState, property_id: felt252, amount: u64) {}
 
-        fn withdraw(ref self: ContractState, property_id: felt252){
-    
-        }
+        fn withdraw(ref self: ContractState, property_id: felt252) {}
 
 
-        fn finalize_campaign(ref self: ContractState, property_id: felt252) {
-           
-        }
+        fn finalize_campaign(ref self: ContractState, property_id: felt252) {}
 
+        /// 1️⃣ Get full property details
         fn get_property_info(self: @ContractState, property_id: felt252) -> PropertyInfo {
-            PropertyInfo {
-                title: 'Luxury Condo',
-                description: 'Beautiful condo in city center',
-                property_type: 'Residential',
-                image: 'ipfs://imagehash',
-                creator: 0x1234.try_into().unwrap(),
-                price: 1_000_000,
-                current_amount: 500_000,
-                deadline: 1_700_000_000,
-                longitude: '40.7128N',
-                latitude: '74.0060W',
-                is_active: true,
-                is_successful: false, // Example timestamp
-            }
+            // Read property from storage and return it
+            self.properties.entry(property_id).read()
         }
 
+
+        /// 2️⃣ Get list of all contributors for a property
         fn get_contributors(self: @ContractState, property_id: felt252) -> Array<Contributor> {
-            let mut dummy_contributors = array![];
-            dummy_contributors.append(Contributor {
-                wallet_address: get_caller_address(),
-                amount: 100,
-                timestamp: 1672531200,
-            });
-            dummy_contributors
+            let mut contributors = ArrayTrait::new();
+
+            // Get the number of contributors for this property
+            let contributor_count = self.contributor_counts.entry(property_id).read();
+
+            // If no contributors, return empty array
+            if contributor_count == 0 {
+                return contributors;
+            }
+
+            // Loop through all contributors
+            let mut i: u32 = 0;
+            while i < contributor_count {
+                // Get contributor address
+                let contributor_address = self.property_contributors.entry((property_id, i)).read();
+
+                // Get contribution amount
+                let contribution_amount = self
+                    .user_contributions
+                    .entry((property_id, contributor_address))
+                    .read();
+
+                // Only include contributors with non-zero contributions
+                if contribution_amount > 0 {
+                    // Get contribution timestamp
+                    let timestamp = self
+                        .contribution_timestamps
+                        .entry((property_id, contributor_address))
+                        .read();
+
+                    // Create Contributor struct and add to array
+                    contributors
+                        .append(
+                            Contributor {
+                                wallet_address: contributor_address,
+                                amount: contribution_amount,
+                                timestamp,
+                            },
+                        );
+                }
+
+                i += 1;
+            }
+
+            contributors
         }
 
         fn is_contributor(
             self: @ContractState, property_id: felt252, user: ContractAddress,
-        ) -> (bool, u64){
-            (true, 50)
+        ) -> (bool, u64) {
+            // Get the contribution amount for this user
+            let contribution_amount = self.user_contributions.entry((property_id, user)).read();
+
+            // Return (true, amount) if contributed, (false, 0) otherwise
+            if contribution_amount > 0 {
+                (true, contribution_amount)
+            } else {
+                (false, 0)
+            }
         }
     }
 }
