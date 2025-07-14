@@ -4,7 +4,7 @@ pub mod Graso {
         Map, MutableVecTrait, StoragePathEntry, StoragePointerReadAccess, StoragePointerWriteAccess,
         Vec, VecTrait,
     };
-    use core::starknet::{ContractAddress, get_caller_address};
+    use core::starknet::{ContractAddress, get_block_timestamp, get_caller_address};
     use graso_contract::interfaces::irealestateido::IRealEstateIDO;
     use graso_contract::types::types::{Contributor, PropertyInfo};
 
@@ -45,8 +45,35 @@ pub mod Graso {
 
         fn withdraw(ref self: ContractState, property_id: felt252) {}
 
+        fn finalize_campaign(ref self: ContractState, property_id: felt252) {
+            // Get current property info
+            let mut property = self.properties.entry(property_id).read();
 
-        fn finalize_campaign(ref self: ContractState, property_id: felt252) {}
+            // Check if campaign is still active
+            assert(property.is_active, 'Campaign already finalized');
+
+            // Check if deadline has passed
+            let current_time = get_block_timestamp();
+            assert(current_time >= property.deadline, 'Campaign deadline not reached');
+
+            // Determine if campaign was successful
+            let is_successful = property.current_amount >= property.price;
+
+            // Update property status
+            property.is_successful = is_successful;
+            property.is_active = false;
+
+            // If successful, transfer funds to creator
+            // Note: This is a simplified transfer - in a real implementation,
+            // you would use IERC20Dispatcher for token transfers
+            // For ETH transfers on Starknet, you would typically use a token contract
+            if is_successful { // TODO: Implement actual fund transfer to property.creator
+            // Example: token.transfer(property.creator, property.current_amount);
+            }
+
+            // Save updated property info
+            self.properties.entry(property_id).write(property);
+        }
 
         /// 1️⃣ Get full property details
         fn get_property_info(self: @ContractState, property_id: felt252) -> PropertyInfo {
